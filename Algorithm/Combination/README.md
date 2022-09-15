@@ -28,4 +28,4 @@ void Combination(vector<int>& arr, vector<int> combination, int numItem, int ind
 	}
 }
 ```
-  
+ - 시간복잡도 : 재귀함수에서 자신을 2번씩 호출하므로 $O(2^n)$  
