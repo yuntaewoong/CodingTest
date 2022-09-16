@@ -13,5 +13,4 @@ std::priority_queue<int, std::vector<int>, decltype(cmp)> q5(cmp);
 
 # 시간복잡도
 삽입 : $O(logN)$  
-삭제 : $O(logN)$  
-순회 : $O(NlogN)$ =>N개를 삭제하면서 순회하면 됨    
+삭제 : $O(logN)$
