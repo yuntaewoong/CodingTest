@@ -1,9 +1,9 @@
 
 # 문제 
-백준 5430번
+백준 5639번
 
 # 링크
-https://www.acmicpc.net/problem/5430
+https://www.acmicpc.net/problem/5639
 
 # 시도 횟수
 3회
