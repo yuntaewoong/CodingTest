@@ -48,7 +48,8 @@ int main()
 		lines[i].ANum = aNum;
 		lines[i].BNum = bNum;
 	}
-	sort(lines, lines + 100, Compare);//A값에 대해 정렬
+	sort(lines, lines + N, Compare);//A값에 대해 정렬
+
 
 
 	for (int i = 0; i < N; i++)
