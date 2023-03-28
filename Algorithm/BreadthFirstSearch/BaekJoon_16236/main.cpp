@@ -27,19 +27,19 @@ int sharkI;//아기상어의 I
 int sharkJ;//아기상어의 J
 int resultDistance = 0;//상어가 이동한 거리
 
-int dx[4] = {0,-1,0,1};//상좌하우
-int dy[4] = {-1,0,1,0};//상좌하우
+int dx[4] = { 0,-1,0,1 };//상좌하우
+int dy[4] = { -1,0,1,0 };//상좌하우
 
 class Node
 {
 public:
-	Node(int i,int j,int depth) : i(i),j(j),depth(depth) {}
+	Node(int i, int j, int depth) : i(i), j(j), depth(depth) {}
 	int i;
 	int j;
 	int depth;
 };
 
-void Eat(int i,int j)//상어가 i,j의 물고기를 먹음 처리
+void Eat(int i, int j)//상어가 i,j의 물고기를 먹음 처리
 {
 	if (numOfToEat == 1)//성장하면서 먹기
 	{
@@ -60,7 +60,7 @@ void Eat(int i,int j)//상어가 i,j의 물고기를 먹음 처리
 	board[sharkI][sharkJ] = 9;
 }
 
-bool BFS(int i,int j)//(i,j)에 아기상어 있을때 1회 시행,불가능하면 false리턴
+bool BFS(int i, int j)//(i,j)에 아기상어 있을때 1회 시행,불가능하면 false리턴
 {
 	queue<Node> bfsQueue;
 	vector<Node> ToEatNodes;//먹을 후보지
@@ -68,7 +68,6 @@ bool BFS(int i,int j)//(i,j)에 아기상어 있을때 1회 시행,불가능하�
 	bool isFound = false;
 	bfsQueue.push(Node(i, j, 0));
 	Visited[i][j] = true;
-	int depthRecord = 0;
 	while (!bfsQueue.empty())
 	{
 		int topI = bfsQueue.front().i;
@@ -78,39 +77,42 @@ bool BFS(int i,int j)//(i,j)에 아기상어 있을때 1회 시행,불가능하�
 
 		if (board[topI][topJ] < sharkSize && board[topI][topJ] > 0)//방문한 노드가 상어크기보다 작으면 먹을 후보군에 등록
 			ToEatNodes.push_back(Node(topI, topJ, topDepth));
-		if (depthRecord != topDepth )//|| bfsQueue.empty())//디버깅: 이 if문이 4를 정상작동하지 못하게함 ->알아내기
+		else
 		{
-			if (!ToEatNodes.empty())
-			{//i가 최소인것중에 j가 최소인거 먹기
-				int minI = 21;
-				for (int i = 0; i < ToEatNodes.size(); i++)
-					minI = min(minI, ToEatNodes[i].i);//가장 작은 i값구하기
-				int minJ = 21;
-				for (int i = 0; i < ToEatNodes.size(); i++)
-				{
-					if (ToEatNodes[i].i == minI)
-						minJ = min(minJ, ToEatNodes[i].j);
-				}
-				Eat(minI, minJ);
-				resultDistance += ToEatNodes[0].depth;
-				cout << minI << " " << minJ << " " << ToEatNodes[0].depth << endl;
-				isFound = true;
-				break;
-			}
-		}
-		depthRecord = topDepth;
-		for (int k = 0; k < 4; k++)
-		{
-			int nextI = topI + dy[k];
-			int nextJ = topJ + dx[k];
-			if (nextI < 0 || nextI >= N || nextJ < 0 || nextJ >= N)
-				continue;
-			if (!Visited[nextI][nextJ] && board[nextI][nextJ] <= sharkSize)//아직 방문안했고 상어보다 작거나 같은 물고기칸이나 빈칸이라면
+			for (int k = 0; k < 4; k++)
 			{
-				Visited[nextI][nextJ] = true;
-				bfsQueue.push(Node(nextI, nextJ, topDepth + 1));
+				int nextI = topI + dy[k];
+				int nextJ = topJ + dx[k];
+				if (nextI < 0 || nextI >= N || nextJ < 0 || nextJ >= N)
+					continue;
+				if (!Visited[nextI][nextJ] && board[nextI][nextJ] <= sharkSize)//아직 방문안했고 상어보다 작거나 같은 물고기칸이나 빈칸이라면
+				{
+					Visited[nextI][nextJ] = true;
+					bfsQueue.push(Node(nextI, nextJ, topDepth + 1));
+				}
 			}
 		}
+	}
+	if (!ToEatNodes.empty())
+	{//depth가 최소인거중에 i가 최소인것중에 j가 최소인거 먹기
+		int minDepth = 2100000000;
+		for (int i = 0; i < ToEatNodes.size(); i++)
+			minDepth = min(minDepth, ToEatNodes[i].depth);
+		int minI = 21;
+		for (int i = 0; i < ToEatNodes.size(); i++)
+		{
+			if(ToEatNodes[i].depth == minDepth)
+				minI = min(minI, ToEatNodes[i].i);//가장 작은 i값구하기
+		}
+		int minJ = 21;
+		for (int i = 0; i < ToEatNodes.size(); i++)
+		{
+			if (ToEatNodes[i].depth == minDepth && ToEatNodes[i].i == minI)
+				minJ = min(minJ, ToEatNodes[i].j);
+		}
+		Eat(minI, minJ);
+		resultDistance += ToEatNodes[0].depth;
+		isFound = true;
 	}
 	return isFound;
 }
